@@ -20,7 +20,7 @@ Location is **off by default**. It only turns on when the user explicitly enters
 ## Tech Stack
 - **Mobile:** React Native + Expo (iOS & Android from one codebase)
 - **Navigation:** React Navigation
-- **Backend:** Node.js + Express
+- **Backend:** Python + FastAPI
 - **DB:** PostgreSQL (+ PostGIS for geo) — swappable
 - **Realtime:** WebSockets (presence + pings)
 - **Auth:** JWT
@@ -32,8 +32,13 @@ npm install
 npx expo start
 
 # Backend
-cd server && npm install && npm run dev
+cd server
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 4000
 ```
+Interactive API docs auto-generate at `http://localhost:4000/docs`.
+
 See [`docs/SETUP.md`](docs/SETUP.md) for full setup.
 
 ## Repo Structure
@@ -43,7 +48,12 @@ src/          Mobile app (React Native)
   components/ Reusable UI
   services/   API + location + realtime clients
   context/    Auth & study-mode global state
-server/       Express backend
+server/       FastAPI backend
+  app/
+    main.py     App entry, router wiring, WebSocket endpoint
+    core/       Config + JWT auth dependency
+    routers/    One file per surface (auth, friends, groups...)
+    models/     Pydantic schemas + SQL schema
 docs/         Setup, privacy, architecture, roadmap
 ```
 
